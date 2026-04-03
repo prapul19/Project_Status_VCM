@@ -1,0 +1,27 @@
+<svg width="820" height="340" viewBox="0 0 820 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VCloud Master logo">
+  <rect width="820" height="340" rx="34" fill="#FFA11A"/>
+  <g filter="url(#shadow)">
+    <path d="M170 220C126 220 90 185 90 142C90 99 126 64 170 64C190 64 208 71 222 82C239 56 268 40 300 40C346 40 384 73 390 118C398 115 407 114 416 114C457 114 490 146 490 186C490 205 483 223 470 236H170V220Z" fill="white"/>
+    <path d="M320 250H510" stroke="#E06B12" stroke-width="12" stroke-linecap="round"/>
+  </g>
+  <path d="M205 198L173 126H198L219 173L240 126H264L232 198H205Z" fill="#F0781A"/>
+  <path d="M294 199C274 199 258 183 258 163C258 142 274 127 294 127C305 127 315 132 322 140L307 154C304 150 299 148 294 148C284 148 278 155 278 163C278 172 284 179 294 179C299 179 304 177 307 173L322 186C315 194 305 199 294 199Z" fill="#F0781A"/>
+  <path d="M363 199C342 199 326 183 326 163C326 142 342 127 363 127C383 127 399 142 399 163C399 183 383 199 363 199ZM363 179C373 179 379 172 379 163C379 155 373 148 363 148C353 148 347 155 347 163C347 172 353 179 363 179Z" fill="#F0781A"/>
+  <path d="M426 198V103H446V143C451 133 460 127 472 127C490 127 504 142 504 163C504 184 490 199 472 199C460 199 451 193 446 183V198H426ZM465 179C475 179 482 171 482 163C482 154 475 147 465 147C455 147 448 154 448 163C448 171 455 179 465 179Z" fill="#F0781A"/>
+  <path d="M531 199C511 199 495 183 495 163C495 142 511 127 531 127C548 127 562 138 565 156V198H545V189C540 196 532 199 523 199H531ZM531 180C541 180 548 173 548 163C548 153 541 146 531 146C521 146 515 153 515 163C515 173 521 180 531 180Z" fill="#F0781A"/>
+  <path d="M590 198V129H610V140C615 132 623 127 633 127C649 127 661 138 661 157V198H640V160C640 151 635 146 627 146C618 146 611 151 611 162V198H590Z" fill="#F0781A"/>
+  <path d="M688 198C669 198 653 183 653 163C653 142 669 127 688 127C696 127 703 130 708 136V103H729V198H708V190C703 196 696 198 688 198ZM692 179C701 179 709 172 709 163C709 154 701 147 692 147C682 147 675 154 675 163C675 172 682 179 692 179Z" fill="#F0781A"/>
+  <text x="466" y="246" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#1E1E1E" letter-spacing="8">MASTER</text>
+  <defs>
+    <filter id="shadow" x="74" y="28" width="432" height="230" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="4"/>
+      <feGaussianBlur stdDeviation="8"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.83 0 0 0 0 0.43 0 0 0 0 0.05 0 0 0 0.22 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+</svg>

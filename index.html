@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VCloud Master | Project Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+
+    <!-- ENTRANCE PAGE -->
+    <section id="entrance-view" class="view active">
+      <div class="hero-card">
+        <img src="vcloudmaster-logo.webp" alt="VCloud Master Logo" class="brand-logo" />
+        <h1>Project Management Portal</h1>
+        <p>Choose your access type to continue.</p>
+        <div class="access-actions">
+          <button id="user-access-btn" class="btn btn-primary" type="button">User Access</button>
+          <button id="admin-access-btn" class="btn btn-outline" type="button">Admin Access</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- USER FORM PAGE -->
+    <section id="user-view" class="view">
+      <div class="panel-header">
+        <h2>Project Update Entry</h2>
+        <button class="btn btn-text" data-nav="entrance-view" type="button">Back</button>
+      </div>
+      <form id="project-form" class="project-form">
+        <div class="field-grid">
+
+          <!-- Your Name dropdown -->
+          <label class="field">
+            <span>Your Name</span>
+            <select id="userName" name="userName" required>
+              <option value="" selected disabled>Select your name</option>
+              <option value="ShashiKanth">ShashiKanth</option>
+              <option value="Prapul">Prapul</option>
+              <option value="Swapna">Swapna</option>
+              <option value="Hasini">Hasini</option>
+              <option value="Vidhyasagar">Vidhyasagar</option>
+            </select>
+          </label>
+
+          <!-- Date -->
+          <label class="field">
+            <span>Date</span>
+            <input type="date" id="updateDate" name="updateDate" required />
+          </label>
+
+          <!-- Project Name with inline Add New -->
+          <div class="field">
+            <span>Project Name</span>
+            <select id="projectNameSelect" name="projectName" required>
+              <option value="" selected disabled>Select project</option>
+              <option value="DDC">DDC</option>
+              <option value="AL Islami">AL Islami</option>
+              <option value="AL Khayam">AL Khayam</option>
+            </select>
+            <button type="button" id="show-add-project-btn" class="btn-add-project">+ Add New Project</button>
+            <div id="add-project-row" class="add-project-row hidden">
+              <input type="text" id="newProjectInput" placeholder="Type project name and press Add" />
+              <div class="add-project-actions">
+                <button type="button" id="confirm-add-btn" class="btn btn-primary">Add</button>
+                <button type="button" id="cancel-add-btn" class="btn btn-outline">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Status dropdown -->
+          <label class="field">
+            <span>Project Status</span>
+            <select id="projectStatus" name="projectStatus" required>
+              <option value="" selected disabled>Select status</option>
+              <option value="Planning">Planning</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Description -->
+        <label class="field">
+          <span>Status Update Description</span>
+          <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Write project update details here" required></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Update</button>
+          <button type="reset" class="btn btn-outline">Reset</button>
+        </div>
+        <p id="form-message" class="form-message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- ADMIN PAGE -->
+    <section id="admin-view" class="view">
+      <div class="panel-header">
+        <h2>Admin Dashboard</h2>
+        <button class="btn btn-text" data-nav="entrance-view" type="button">Back</button>
+      </div>
+      <div class="field">
+        <span>Select Project To View Status</span>
+        <select id="adminProjectSelect">
+          <option value="" selected disabled>Select project</option>
+        </select>
+      </div>
+      <div class="table-tools">
+        <button id="refresh-btn" class="btn btn-outline" type="button">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody id="project-table-body"></tbody>
+        </table>
+      </div>
+      <p id="admin-empty" class="empty-state">No project updates yet.</p>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
