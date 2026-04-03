@@ -30,7 +30,7 @@ const MIME_TYPES = {
 function ensureStore() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   if (!fs.existsSync(DATA_FILE)) {
-    const initial = { projects: DEFAULT_PROJECTS.slice(), updates: [] };
+    const initial = { projects: DEFAULT_PROJECTS.slice(), updates: [], projectDetails: [] };
     fs.writeFileSync(DATA_FILE, JSON.stringify(initial, null, 2), "utf8");
     return;
   }
@@ -42,6 +42,7 @@ function ensureStore() {
 function normalizeStore(raw) {
   const rawProjects = Array.isArray(raw?.projects) ? raw.projects : [];
   const rawUpdates = Array.isArray(raw?.updates) ? raw.updates : [];
+  const rawProjectDetails = Array.isArray(raw?.projectDetails) ? raw.projectDetails : [];
 
   const cleanProjects = [
     ...new Set(
@@ -59,8 +60,6 @@ function normalizeStore(raw) {
       updateDate: String(item.updateDate || "").trim(),
       projectName: String(item.projectName || "").trim(),
       projectStatus: String(item.projectStatus || "").trim(),
-      projectLeader: String(item.projectLeader || "").trim(),
-      teamDetails: String(item.teamDetails || "").trim(),
       projectDescription: String(item.projectDescription || "").trim(),
       createdAt: item.createdAt || new Date().toISOString()
     }))
@@ -73,7 +72,17 @@ function normalizeStore(raw) {
         item.projectDescription
     );
 
-  return { projects: cleanProjects, updates: cleanUpdates };
+  const cleanProjectDetails = rawProjectDetails
+    .filter((item) => item && typeof item === "object")
+    .map((item) => ({
+      projectName: String(item.projectName || "").trim(),
+      projectOwner: String(item.projectOwner || "").trim(),
+      teamDetails: String(item.teamDetails || "").trim(),
+      updatedAt: item.updatedAt || new Date().toISOString()
+    }))
+    .filter((item) => item.projectName && item.projectOwner && item.teamDetails);
+
+  return { projects: cleanProjects, updates: cleanUpdates, projectDetails: cleanProjectDetails };
 }
 
 function readStore() {
@@ -81,7 +90,7 @@ function readStore() {
     const raw = fs.readFileSync(DATA_FILE, "utf8");
     return normalizeStore(JSON.parse(raw));
   } catch {
-    return { projects: DEFAULT_PROJECTS.slice(), updates: [] };
+    return { projects: DEFAULT_PROJECTS.slice(), updates: [], projectDetails: [] };
   }
 }
 
@@ -191,6 +200,7 @@ function serveStatic(req, res, pathname) {
 
 async function handleApi(req, res, pathname) {
   const method = req.method || "GET";
+  const requestUrl = new URL(req.url || "/", `http://${HOST}:${PORT}`);
 
   if (pathname === "/api/auth" && method === "POST") {
     const body = await collectBody(req);
@@ -262,8 +272,6 @@ async function handleApi(req, res, pathname) {
       updateDate: String(body.updateDate || "").trim(),
       projectName: String(body.projectName || "").trim(),
       projectStatus: String(body.projectStatus || "").trim(),
-      projectLeader: String(body.projectLeader || "").trim(),
-      teamDetails: String(body.teamDetails || "").trim(),
       projectDescription: String(body.projectDescription || "").trim(),
       createdAt: new Date().toISOString()
     };
@@ -273,8 +281,6 @@ async function handleApi(req, res, pathname) {
       !entry.updateDate ||
       !entry.projectName ||
       !entry.projectStatus ||
-      !entry.projectLeader ||
-      !entry.teamDetails ||
       !entry.projectDescription
     ) {
       return sendJson(res, 400, { error: "All fields are required" });
@@ -289,6 +295,59 @@ async function handleApi(req, res, pathname) {
 
     writeStore(store);
     return sendJson(res, 201, { ok: true });
+  }
+
+  if (pathname === "/api/project-details" && method === "GET") {
+    const auth = authorize(req, "admin");
+    if (!auth.ok) {
+      return sendJson(res, auth.status, { error: auth.error });
+    }
+
+    const projectName = String(requestUrl.searchParams.get("projectName") || "").trim();
+    const store = readStore();
+
+    if (!projectName) {
+      return sendJson(res, 200, { details: store.projectDetails || [] });
+    }
+
+    const detail = (store.projectDetails || []).find((item) => item.projectName === projectName) || {};
+    return sendJson(res, 200, detail);
+  }
+
+  if (pathname === "/api/project-details" && method === "POST") {
+    const auth = authorize(req, "user");
+    if (!auth.ok) {
+      return sendJson(res, auth.status, { error: auth.error });
+    }
+
+    const body = await collectBody(req);
+    const entry = {
+      projectName: String(body.projectName || "").trim(),
+      projectOwner: String(body.projectOwner || "").trim(),
+      teamDetails: String(body.teamDetails || "").trim(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (!entry.projectName || !entry.projectOwner || !entry.teamDetails) {
+      return sendJson(res, 400, { error: "All fields are required" });
+    }
+
+    const store = readStore();
+    const details = Array.isArray(store.projectDetails) ? store.projectDetails : [];
+    const idx = details.findIndex((item) => item.projectName === entry.projectName);
+    if (idx >= 0) {
+      details[idx] = entry;
+    } else {
+      details.push(entry);
+    }
+    store.projectDetails = details;
+
+    if (!store.projects.includes(entry.projectName)) {
+      store.projects.push(entry.projectName);
+    }
+
+    writeStore(store);
+    return sendJson(res, 201, { ok: true, detail: entry });
   }
 
   if (pathname === "/api/updates" && method === "DELETE") {

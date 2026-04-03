@@ -5,13 +5,17 @@ const ADMIN_TOKEN_KEY = "vcm_admin_token";
 const entranceView = document.getElementById("entrance-view");
 const userView = document.getElementById("user-view");
 const adminView = document.getElementById("admin-view");
+const projectDetailsView = document.getElementById("project-details-view");
 
 const userAccessBtn = document.getElementById("user-access-btn");
 const adminAccessBtn = document.getElementById("admin-access-btn");
+const projectDetailsAccessBtn = document.getElementById("project-details-access-btn");
 const navButtons = document.querySelectorAll("[data-nav]");
 
 const projectForm = document.getElementById("project-form");
 const formMessage = document.getElementById("form-message");
+const projectDetailsForm = document.getElementById("project-details-form");
+const projectDetailsMessage = document.getElementById("project-details-message");
 
 const projectNameSelect = document.getElementById("projectNameSelect");
 const showAddBtn = document.getElementById("show-add-project-btn");
@@ -23,10 +27,13 @@ const cancelAddBtn = document.getElementById("cancel-add-btn");
 const tableBody = document.getElementById("project-table-body");
 const adminEmpty = document.getElementById("admin-empty");
 const adminProjectSelect = document.getElementById("adminProjectSelect");
+const adminProjectDetailsCard = document.getElementById("admin-project-details-card");
+const adminProjectOwner = document.getElementById("admin-project-owner");
+const adminTeamDetails = document.getElementById("admin-team-details");
 const refreshBtn = document.getElementById("refresh-btn");
 
 function showView(id) {
-  [entranceView, userView, adminView].forEach((v) => v.classList.remove("active"));
+  [entranceView, userView, adminView, projectDetailsView].forEach((v) => v.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
@@ -162,6 +169,9 @@ function escapeHtml(v) {
 
 async function renderTable(selectedProjectName = "") {
   tableBody.innerHTML = "";
+  adminProjectDetailsCard.classList.add("hidden");
+  adminProjectOwner.textContent = "-";
+  adminTeamDetails.textContent = "-";
 
   try {
     const { updates } = await apiRequest("/updates", { authRole: "admin" });
@@ -181,6 +191,20 @@ async function renderTable(selectedProjectName = "") {
       return;
     }
 
+    try {
+      const details = await apiRequest(`/project-details?projectName=${encodeURIComponent(selectedProjectName)}`, {
+        authRole: "admin"
+      });
+
+      if (details && details.projectName) {
+        adminProjectOwner.textContent = details.projectOwner || "-";
+        adminTeamDetails.textContent = details.teamDetails || "-";
+        adminProjectDetailsCard.classList.remove("hidden");
+      }
+    } catch {
+      // Details may not exist for older projects; table should still render.
+    }
+
     adminEmpty.style.display = "none";
     filtered
       .slice()
@@ -191,8 +215,6 @@ async function renderTable(selectedProjectName = "") {
           <td>${escapeHtml(item.updateDate)}</td>
           <td>${escapeHtml(item.projectName)}</td>
           <td>${escapeHtml(item.projectStatus)}</td>
-          <td>${escapeHtml(item.projectLeader || "-")}</td>
-          <td>${escapeHtml(item.teamDetails || "-")}</td>
           <td>${escapeHtml(item.projectDescription)}</td>`;
         tableBody.appendChild(tr);
       });
@@ -233,6 +255,15 @@ adminAccessBtn.addEventListener("click", async () => {
   showView("admin-view");
 });
 
+projectDetailsAccessBtn.addEventListener("click", async () => {
+  if (!(await requestAccess("user"))) {
+    return;
+  }
+
+  projectDetailsMessage.textContent = "";
+  showView("project-details-view");
+});
+
 navButtons.forEach((btn) => btn.addEventListener("click", () => showView(btn.dataset.nav)));
 
 showAddBtn.addEventListener("click", showAddRow);
@@ -262,8 +293,6 @@ projectForm.addEventListener("submit", async (e) => {
     updateDate: String(fd.get("updateDate") || "").trim(),
     projectName: String(fd.get("projectName") || "").trim(),
     projectStatus: String(fd.get("projectStatus") || "").trim(),
-    projectLeader: String(fd.get("projectLeader") || "").trim(),
-    teamDetails: String(fd.get("teamDetails") || "").trim(),
     projectDescription: String(fd.get("projectDescription") || "").trim()
   };
 
@@ -285,5 +314,34 @@ projectForm.addEventListener("submit", async (e) => {
     await refreshProjectDropdown();
   } catch (err) {
     formMessage.textContent = `Unable to save update: ${err.message}`;
+  }
+});
+
+projectDetailsForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const fd = new FormData(projectDetailsForm);
+  const payload = {
+    projectName: String(fd.get("projectName") || "").trim(),
+    projectOwner: String(fd.get("projectOwner") || "").trim(),
+    teamDetails: String(fd.get("teamDetails") || "").trim()
+  };
+
+  if (Object.values(payload).some((v) => !v)) {
+    projectDetailsMessage.textContent = "Please fill all fields before saving.";
+    return;
+  }
+
+  try {
+    await apiRequest("/project-details", {
+      method: "POST",
+      authRole: "user",
+      body: JSON.stringify(payload)
+    });
+
+    projectDetailsMessage.textContent = "Project details saved successfully!";
+    projectDetailsForm.reset();
+  } catch (err) {
+    projectDetailsMessage.textContent = `Unable to save project details: ${err.message}`;
   }
 });

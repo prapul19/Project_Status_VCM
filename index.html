@@ -21,6 +21,7 @@
         <div class="access-actions">
           <button id="user-access-btn" class="btn btn-primary" type="button">User Access</button>
           <button id="admin-access-btn" class="btn btn-outline" type="button">Admin Access</button>
+          <button id="project-details-access-btn" class="btn btn-outline" type="button">Project Details</button>
         </div>
       </div>
     </section>
@@ -85,19 +86,6 @@
           </label>
         </div>
 
-        <h3 class="section-title">Project Details</h3>
-        <div class="field-grid">
-          <label class="field">
-            <span>Project Leader</span>
-            <input type="text" id="projectLeader" name="projectLeader" placeholder="Enter project leader name" required />
-          </label>
-
-          <label class="field">
-            <span>Team Details</span>
-            <input type="text" id="teamDetails" name="teamDetails" placeholder="Enter team details" required />
-          </label>
-        </div>
-
         <!-- Description -->
         <label class="field">
           <span>Status Update Description</span>
@@ -109,6 +97,39 @@
           <button type="reset" class="btn btn-outline">Reset</button>
         </div>
         <p id="form-message" class="form-message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- PROJECT DETAILS PAGE -->
+    <section id="project-details-view" class="view">
+      <div class="panel-header">
+        <h2>Project Details Entry</h2>
+        <button class="btn btn-text" data-nav="entrance-view" type="button">Back</button>
+      </div>
+
+      <form id="project-details-form" class="project-form">
+        <div class="field-grid">
+          <label class="field">
+            <span>Project Name</span>
+            <input type="text" id="detailsProjectName" name="projectName" placeholder="Enter project name" required />
+          </label>
+
+          <label class="field">
+            <span>Project Owner</span>
+            <input type="text" id="detailsProjectOwner" name="projectOwner" placeholder="Enter project owner" required />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Team Details</span>
+          <textarea id="detailsTeamDetails" name="teamDetails" rows="3" placeholder="Enter team details" required></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Project Details</button>
+          <button type="reset" class="btn btn-outline">Reset</button>
+        </div>
+        <p id="project-details-message" class="form-message" aria-live="polite"></p>
       </form>
     </section>
 
@@ -124,6 +145,13 @@
           <option value="" selected disabled>Select project</option>
         </select>
       </div>
+
+      <div id="admin-project-details-card" class="project-meta-card hidden">
+        <h3 class="section-title">Project Details</h3>
+        <p><strong>Project Owner:</strong> <span id="admin-project-owner">-</span></p>
+        <p><strong>Team Details:</strong> <span id="admin-team-details">-</span></p>
+      </div>
+
       <div class="table-tools">
         <button id="refresh-btn" class="btn btn-outline" type="button">Refresh</button>
       </div>
@@ -135,8 +163,6 @@
               <th>Date</th>
               <th>Project</th>
               <th>Status</th>
-              <th>Project Leader</th>
-              <th>Team Details</th>
               <th>Description</th>
             </tr>
           </thead>

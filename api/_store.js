@@ -2,6 +2,7 @@ const { kv } = require("@vercel/kv");
 
 const PROJECTS_KEY = "vcm:projects";
 const UPDATES_KEY = "vcm:updates";
+const PROJECT_DETAILS_KEY = "vcm:project-details";
 const DEFAULT_PROJECTS = ["DDC", "AL Islami", "AL Khayam"];
 
 function uniqueStrings(values) {
@@ -24,6 +25,18 @@ function normalizeUpdates(values) {
     .filter((item) => item.userName && item.updateDate && item.projectName && item.projectStatus && item.projectDescription);
 }
 
+function normalizeProjectDetails(values) {
+  return (values || [])
+    .filter((item) => item && typeof item === "object")
+    .map((item) => ({
+      projectName: String(item.projectName || "").trim(),
+      projectOwner: String(item.projectOwner || "").trim(),
+      teamDetails: String(item.teamDetails || "").trim(),
+      updatedAt: item.updatedAt || new Date().toISOString()
+    }))
+    .filter((item) => item.projectName && item.projectOwner && item.teamDetails);
+}
+
 async function readProjects() {
   const stored = await kv.get(PROJECTS_KEY);
   const merged = uniqueStrings([...(Array.isArray(stored) ? stored : []), ...DEFAULT_PROJECTS]);
@@ -43,12 +56,24 @@ async function writeUpdates(updates) {
   await kv.set(UPDATES_KEY, normalizeUpdates(updates));
 }
 
+async function readProjectDetails() {
+  const stored = await kv.get(PROJECT_DETAILS_KEY);
+  return normalizeProjectDetails(Array.isArray(stored) ? stored : []);
+}
+
+async function writeProjectDetails(projectDetails) {
+  await kv.set(PROJECT_DETAILS_KEY, normalizeProjectDetails(projectDetails));
+}
+
 async function ensureSeeded() {
   const projects = await readProjects();
   await writeProjects(projects);
 
   const updates = await readUpdates();
   await writeUpdates(updates);
+
+  const projectDetails = await readProjectDetails();
+  await writeProjectDetails(projectDetails);
 }
 
 module.exports = {
@@ -56,6 +81,8 @@ module.exports = {
   writeProjects,
   readUpdates,
   writeUpdates,
+  readProjectDetails,
+  writeProjectDetails,
   ensureSeeded,
   DEFAULT_PROJECTS
 };

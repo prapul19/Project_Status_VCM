@@ -62,6 +62,18 @@ h1{font-size:clamp(1.55rem,2.2vw,2rem);}
   padding:9px 10px;font-size:.94rem;font-family:inherit;width:100%;}
 .add-project-actions{display:flex;gap:8px;}
 .add-project-actions .btn{flex:1;}
+.project-meta-card{
+  margin:10px 0 14px;
+  padding:12px 14px;
+  background:#fff8f0;
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.project-meta-card p{
+  margin:6px 0;
+  color:var(--text-main);
+}
+.hidden{display:none !important;}
 /* table */
 .table-wrap{width:100%;overflow-x:auto;margin-top:10px;border-radius:12px;border:1px solid var(--border);}
 table{width:100%;border-collapse:collapse;background:#fff;}
