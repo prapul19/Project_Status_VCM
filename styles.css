@@ -42,6 +42,12 @@ h1{font-size:clamp(1.55rem,2.2vw,2rem);}
   padding:10px;font-size:.94rem;font-family:inherit;width:100%;color:var(--text-main);}
 .field select{border:2px solid #f17616;cursor:pointer;}
 .field textarea{resize:vertical;min-height:96px;}
+.section-title{
+  margin:6px 0 10px;
+  font-family:"Sora",sans-serif;
+  font-size:1rem;
+  color:var(--primary-dark);
+}
 .form-actions,.table-tools{display:flex;gap:10px;flex-wrap:wrap;}
 .form-message{min-height:1.1em;color:#006c35;font-weight:600;margin:12px 0 4px;}
 /* add-new-project */

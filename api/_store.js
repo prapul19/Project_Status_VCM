@@ -16,6 +16,8 @@ function normalizeUpdates(values) {
       updateDate: String(item.updateDate || "").trim(),
       projectName: String(item.projectName || "").trim(),
       projectStatus: String(item.projectStatus || "").trim(),
+      projectLeader: String(item.projectLeader || "").trim(),
+      teamDetails: String(item.teamDetails || "").trim(),
       projectDescription: String(item.projectDescription || "").trim(),
       createdAt: item.createdAt || new Date().toISOString()
     }))

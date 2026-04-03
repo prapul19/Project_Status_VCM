@@ -59,6 +59,8 @@ function normalizeStore(raw) {
       updateDate: String(item.updateDate || "").trim(),
       projectName: String(item.projectName || "").trim(),
       projectStatus: String(item.projectStatus || "").trim(),
+      projectLeader: String(item.projectLeader || "").trim(),
+      teamDetails: String(item.teamDetails || "").trim(),
       projectDescription: String(item.projectDescription || "").trim(),
       createdAt: item.createdAt || new Date().toISOString()
     }))
@@ -260,6 +262,8 @@ async function handleApi(req, res, pathname) {
       updateDate: String(body.updateDate || "").trim(),
       projectName: String(body.projectName || "").trim(),
       projectStatus: String(body.projectStatus || "").trim(),
+      projectLeader: String(body.projectLeader || "").trim(),
+      teamDetails: String(body.teamDetails || "").trim(),
       projectDescription: String(body.projectDescription || "").trim(),
       createdAt: new Date().toISOString()
     };
@@ -269,6 +273,8 @@ async function handleApi(req, res, pathname) {
       !entry.updateDate ||
       !entry.projectName ||
       !entry.projectStatus ||
+      !entry.projectLeader ||
+      !entry.teamDetails ||
       !entry.projectDescription
     ) {
       return sendJson(res, 400, { error: "All fields are required" });

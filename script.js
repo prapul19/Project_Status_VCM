@@ -191,6 +191,8 @@ async function renderTable(selectedProjectName = "") {
           <td>${escapeHtml(item.updateDate)}</td>
           <td>${escapeHtml(item.projectName)}</td>
           <td>${escapeHtml(item.projectStatus)}</td>
+          <td>${escapeHtml(item.projectLeader || "-")}</td>
+          <td>${escapeHtml(item.teamDetails || "-")}</td>
           <td>${escapeHtml(item.projectDescription)}</td>`;
         tableBody.appendChild(tr);
       });
@@ -260,6 +262,8 @@ projectForm.addEventListener("submit", async (e) => {
     updateDate: String(fd.get("updateDate") || "").trim(),
     projectName: String(fd.get("projectName") || "").trim(),
     projectStatus: String(fd.get("projectStatus") || "").trim(),
+    projectLeader: String(fd.get("projectLeader") || "").trim(),
+    teamDetails: String(fd.get("teamDetails") || "").trim(),
     projectDescription: String(fd.get("projectDescription") || "").trim()
   };
 
