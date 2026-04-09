@@ -1,4 +1,4 @@
 #!/bin/bash
-# Add your pre-install steps here
-# e.g., stop existing service, clean up old files
-echo "BeforeInstall: running install script"
+sudo mkdir -p /home/ec2-user/app
+sudo chown -R ec2-user:ec2-user /home/ec2-user/app
+sudo chmod 755 /home/ec2-user/app
